@@ -9,19 +9,30 @@ def emotion_detector(text_to_analyze):
 
     formatted_response = json.loads(response.text)
 
-    # Extracting required set of emotions
-    anger_score = formatted_response['emotionPredictions'][0]['emotion']['anger']
-    disgust_score = formatted_response['emotionPredictions'][0]['emotion']['disgust']
-    fear_score = formatted_response['emotionPredictions'][0]['emotion']['fear']
-    joy_score = formatted_response['emotionPredictions'][0]['emotion']['joy']
-    sadness_score = formatted_response['emotionPredictions'][0]['emotion']['sadness']
+    #Error handling with status codes
+    if response.status_code == 200:
 
-    #Determining the dominant emotion
-    scores = (anger_score, disgust_score, fear_score, joy_score, sadness_score)
-    labels = ('anger', 'disgust', 'fear', 'joy', 'sadness')
+        # Extracting required set of emotions
+        anger_score = formatted_response['emotionPredictions'][0]['emotion']['anger']
+        disgust_score = formatted_response['emotionPredictions'][0]['emotion']['disgust']
+        fear_score = formatted_response['emotionPredictions'][0]['emotion']['fear']
+        joy_score = formatted_response['emotionPredictions'][0]['emotion']['joy']
+        sadness_score = formatted_response['emotionPredictions'][0]['emotion']['sadness']
 
-    high_score = max(scores)
-    dominant_emotion = labels[scores.index(high_score)]
+        #Determining the dominant emotion
+        scores = (anger_score, disgust_score, fear_score, joy_score, sadness_score)
+        labels = ('anger', 'disgust', 'fear', 'joy', 'sadness')
+
+        high_score = max(scores)
+        dominant_emotion = labels[scores.index(high_score)]
+
+    elif response.status_code == 400:
+        anger_score = None
+        disgust_score = None
+        fear_score = None
+        joy_score = None
+        sadness_score = None
+        dominant_emotion = None
 
     #Output as required
     return {
